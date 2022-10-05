@@ -17,7 +17,7 @@ class Base:
             self.__pool = await create_pool(
                 host=self.__config.host,
                 port=self.__config.port,
-                user=self.__config.user,
+                user=self.__config.db_user,
                 password=self.__config.password.get_secret_value(),
                 db=self.__config.name,
                 minsize=self.__config.min_pool,
