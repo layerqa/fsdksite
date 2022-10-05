@@ -1,0 +1,7 @@
+host=*
+user=*
+password=*
+port=3306
+name=*
+min_pool=1
+max_pool=1

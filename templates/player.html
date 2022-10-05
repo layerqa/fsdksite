@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <title>FSDKPLAY</title>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="/" class="brand-logo center">FSDKPLAY</a>
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="sass.html">Stats</a></li>
+                <li><a href="badges.html">Bans</a></li>
+                <li><a href="collapsible.html">Info</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div>
+            <div class="row">
+                <div class="left-align col s4">
+                    <div class="card blue-grey darken-1">
+                        <div class="card-content white-text">
+                            <span class="card-title center-align">Top kills</span>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Kills</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for player in top_kills %}
+                                    <tr>
+                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt=""
+                                                style="width: 25px; height: 25px;"></td>
+                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{
+                                                player.name }}</a></td>
+                                        <td>{{ player.kills }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="center-align col s4">
+                    <div class="card blue-grey darken-1">
+                        <div class="card-content white-text">
+                            <span class="card-title center-align">Top Skill</span>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Skill</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for player in top_skill %}
+                                    <tr>
+                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt=""
+                                                style="width: 25px; height: 25px;"></td>
+                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{
+                                                player.name }}</a></td>
+                                        <td>{{ player.human_skill }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-align col s4">
+                    <div class="card blue-grey darken-1">
+                        <div class="card-content white-text">
+                            <span class="card-title center-align">Top Damage</span>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Damage</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for player in top_damage %}
+                                    <tr>
+                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt=""
+                                                style="width: 25px; height: 25px;"></td>
+                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{
+                                                player.name }}</a></td>
+                                        <td>{{ player.dmg }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card-panel blue-grey darken-1 white-text">
+                <div class="center-align">
+                    <h3 class="col chip">Name: {{ player.name }}</h3>
+                    <h3 class="col chip">Skill: {{ player.human_skill }}</h3>
+                    <h3 class="col chip">Kills: {{ player.kills }}</h3>
+                    <h3 class="col chip">Deaths: {{ player.deaths }}</h3>
+                    <h3 class="col chip">Assists: {{ player.assists }}</h3>
+                    <h3 class="col chip">HeadShots: {{ player.hs }}</h3>
+                    <h3 class="col chip">Damage: {{ player.dmg }}</h3>
+                    <h3 class="col chip">Hits: {{ player.hits }}</h3>
+                    <h3 class="col chip">Bomb Planted: {{ player.bombplants }}</h3>
+                    <h3 class="col chip">Bomb Defused: {{ player.bombdef }}</h3>
+                    <h3 class="col chip">Win TT: {{ player.wint }}</h3>
+                    <h3 class="col chip">Win CT: {{ player.winct }}</h3>
+                    <h3 class="col chip">First join: {{ player.first_join }}</h3>
+                    <h3 class="col chip">Last join: {{ player.last_join }}</h3>
+                </div>
+            </div>
+        </div>
+        <div>
+            {% if weapons %}
+            <h5 class="center-align card-panel teal blue-grey darken-1 white-text">Top player weapons</h5>
+            <table class="striped centered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Kills</th>
+                        <th>HeadShots</th>
+                        <th>Shots</th>
+                        <th>Damage</th>
+                        <th>Hits</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for weapon in weapons %}
+                    <tr>
+                        <td><img class="responsive-img"
+                                src="{{ url_for('static', path='/weapons/') }}{{ weapon.weapon }}.png"
+                                style="width: 50px; height: 50px;"></td>
+                        <td>{{ weapon.weapon_kills }}</td>
+                        {% if weapon.weapon_hs %}
+                        <td>{{ weapon.weapon_hs }}</td>
+                        {% else %}
+                        <td>0</td>
+                        {% endif %}
+                        <td>{{ weapon.weapon_shots }}</td>
+                        <td>{{ weapon.weapon_dmg }}</td>
+                        <td>{{ weapon.weapon_hits }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h5 class="center-align card-panel teal blue-grey darken-1 white-text">No weapon stats</h5>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>
