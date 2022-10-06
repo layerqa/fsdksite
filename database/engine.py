@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Union
 from .base import Base
 from config.models import Settings
 
-from humanize import precisedelta, i18n
+from humanize import precisedelta, i18n, naturaltime
 
 
 class Engine(Base):
@@ -11,20 +11,20 @@ class Engine(Base):
         super().__init__(config)
         _t = i18n.activate("ru_RU")
     
-    async def get_top_kills(self, limit: Optional[int] = 3) -> List[Dict]:
+    async def get_top_kills(self, limit: Optional[int] = 3, offset: Optional[int] = 0) -> List[Dict]:
         '''Get top 3 players sorted by kills'''
-        query = 'SELECT * FROM csstats ORDER BY kills DESC LIMIT %s'
-        return await self.fetchall(query=query, params=[limit])
+        query = 'SELECT * FROM csstats ORDER BY kills DESC LIMIT %s OFFSET %s'
+        return await self.fetchall(query=query, params=[limit, offset])
     
-    async def get_top_skill(self, limit: Optional[int] = 3) -> List[Dict]:
+    async def get_top_skill(self, limit: Optional[int] = 3, offset: Optional[int] = 0) -> List[Dict]:
         '''Get top 3 players sorted by skill'''
-        query = 'SELECT * FROM csstats ORDER BY skill DESC LIMIT %s'
-        return await self.fetchall(query=query, params=[limit])
+        query = 'SELECT * FROM csstats ORDER BY skill DESC LIMIT %s OFFSET %s'
+        return await self.fetchall(query=query, params=[limit, offset])
     
-    async def get_top_damage(self, limit: Optional[int] = 3) -> List[Dict]:
+    async def get_top_damage(self, limit: Optional[int] = 3, offset: Optional[int] = 0) -> List[Dict]:
         '''Get top 3 players sorted by damage'''
-        query = 'SELECT * FROM csstats ORDER BY dmg DESC LIMIT %s'
-        return await self.fetchall(query=query, params=[limit])
+        query = 'SELECT * FROM csstats ORDER BY dmg DESC LIMIT %s OFFSET %s'
+        return await self.fetchall(query=query, params=[limit, offset])
     
     async def get_player_and_weapons(self, player_id: int) -> Union[List[Dict], None]:
         '''Get player stats by id'''
@@ -91,6 +91,12 @@ class Engine(Base):
     def _add_skill_human_to_player(self, player: Dict) -> Dict:
         '''Add human skill to player'''
         player['human_skill'] = self._calculate_skill(skill=player['skill'])
+        player['human_first_join'] = naturaltime(
+            value=player['first_join']
+        )
+        player['human_last_join'] = naturaltime(
+            value=player['last_join']
+        )
         return player
 
     def _add_badges_to_players(self, players: List[Dict]) -> List[Dict]:

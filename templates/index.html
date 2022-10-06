@@ -44,8 +44,10 @@
                                 <tbody>
                                     {% for player in top_kills %}
                                     <tr>
-                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt="" style="width: 25px; height: 25px;"></td>
-                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{ player.name }}</a></td>
+                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt=""
+                                                style="width: 25px; height: 25px;"></td>
+                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{
+                                                player.name }}</a></td>
                                         <td>{{ player.kills }}</td>
                                     </tr>
                                     {% endfor %}
@@ -70,8 +72,10 @@
                                 <tbody>
                                     {% for player in top_skill %}
                                     <tr>
-                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt="" style="width: 25px; height: 25px;"></td>
-                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{ player.name }}</a></td>
+                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt=""
+                                                style="width: 25px; height: 25px;"></td>
+                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{
+                                                player.name }}</a></td>
                                         <td>{{ player.human_skill }}</td>
                                     </tr>
                                     {% endfor %}
@@ -96,8 +100,10 @@
                                 <tbody>
                                     {% for player in top_damage %}
                                     <tr>
-                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt="" style="width: 25px; height: 25px;"></td>
-                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{ player.name }}</a></td>
+                                        <td><img src="{{ url_for('static', path='/cups/') }}{{ player.cup }}.png" alt=""
+                                                style="width: 25px; height: 25px;"></td>
+                                        <td><a href="/player?player_id={{ player.id }}" class="white-text">{{
+                                                player.name }}</a></td>
                                         <td>{{ player.dmg }}</td>
                                     </tr>
                                     {% endfor %}
@@ -137,13 +143,28 @@
             </table>
         </div>
         <ul class="pagination center-align">
+            {% if page %}
+            {% if page == 1 %}
+            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+            {% else %}
+            <li class="waves-effect"><a href="/page?page={{ page - 1 }}"><i class="material-icons">chevron_left</i></a>
+            </li>
+            {% endif %}
+            <li class="active"><a href="/page?page={{ page }}">{{ page }}</a></li>
+            {% for next_page in next_pages %}
+            <li class="waves-effect"><a href="/page?page={{ next_page }}">{{ next_page }}</a></li>
+            {% endfor %}
+            <li class="waves-effect"><a href="/page?page={{ page + 1 }}"><i class="material-icons">chevron_right</i></a>
+            </li>
+            {% else %}
             <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-            <li class="active"><a href="#!">1</a></li>
-            <li class="waves-effect"><a href="#!">2</a></li>
-            <li class="waves-effect"><a href="#!">3</a></li>
-            <li class="waves-effect"><a href="#!">4</a></li>
-            <li class="waves-effect"><a href="#!">5</a></li>
-            <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+            <li class="active"><a href="/page?page=1">1</a></li>
+            <li class="waves-effect"><a href="/page?page=2">2</a></li>
+            <li class="waves-effect"><a href="/page?page=3">3</a></li>
+            <li class="waves-effect"><a href="/page?page=4">4</a></li>
+            <li class="waves-effect"><a href="/page?page=5">5</a></li>
+            <li class="waves-effect"><a href="/page?page=2"><i class="material-icons">chevron_right</i></a></li>
+            {% endif %}
         </ul>
     </div>
 </body>

@@ -46,6 +46,27 @@ async def main_page(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(name='index.html', context=context)
 
 
+@app.get(path='/page', response_class=HTMLResponse)
+async def pages_page(request: Request, page: int) -> HTMLResponse:
+    top_kills = await db.get_top_kills()
+    top_skill = await db.get_top_skill()
+    top_damage = await db.get_top_damage()
+    if page == 1:
+        page += -1
+        next_pages = [1, 2, 3, 4, 5]
+    else:
+        next_pages = [x + 1 for x in range(page, page + 4)]
+    top_players = await db.get_top_skill(limit=20, offset=page * 20)
+    context ={
+        'request': request, 'page': page, 'next_pages': next_pages,
+        'top_kills': db._add_badges_to_players(players=top_kills),
+        'top_skill': db._add_badges_to_players(players=top_skill),
+        'top_damage': db._add_badges_to_players(players=top_damage),
+        'top_players': db._parse_top_players(players=top_players)
+    }
+    return templates.TemplateResponse(name='index.html', context=context)
+
+
 @app.get(path='/player', response_class=HTMLResponse)
 async def player_page(request: Request, player_id: int) -> HTMLResponse:
     try:
