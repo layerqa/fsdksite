@@ -26,105 +26,49 @@ class Engine(Base):
         query = 'SELECT * FROM csstats ORDER BY dmg DESC LIMIT %s OFFSET %s'
         return await self.fetchall(query=query, params=[limit, offset])
     
-    async def get_player_and_weapons(self, player_id: int) -> Union[List[Dict], None]:
+    async def get_top_players(self, limit: Optional[int] = 15, offset: Optional[int] = 0) -> List[Dict]:
         '''Get player stats by id'''
-        query = """
-        SELECT
-            csstats.*, 
-            csstats_weapons.weapon, 
-            csstats_weapons.kills AS weapon_kills, 
-            csstats_weapons.shots AS weapon_shots, 
-            csstats_weapons.hs AS weapon_hs, 
-            csstats_weapons.dmg AS weapon_dmg, 
-            csstats_weapons.hits AS weapon_hits
-        FROM
-            csstats
-            INNER JOIN
-            csstats_weapons
-            ON 
-                csstats.id = csstats_weapons.player_id
-        WHERE
-            csstats.id = %s AND
-            csstats_weapons.shots IS NOT NULL AND
-            csstats_weapons.kills IS NOT NULL
-        ORDER BY
-            weapon_kills DESC
-        """
-        return await self.fetchall(query=query, params=[player_id])
+        query = "SELECT * FROM csstats ORDER BY skill DESC LIMIT %s OFFSET %s"
+        return await self.fetchall(query=query, params=[limit, offset])
     
     async def get_player(self, player_id: int) -> Union[Dict, None]:
         '''Get player stats by id'''
         query = 'SELECT * FROM csstats WHERE id = %s'
         return await self.fetchone(query=query, params=[player_id])
     
+    def set_skill_to_players(self, players: List[Dict]) -> List[Dict]:
+        for player in players:
+            skill = self._calculate_skill(skill=player['skill'])
+            player['skill_text'] = f"{skill} ({player['skill']})"
+        return players
+    
     def _calculate_skill(self, skill: Union[int, float]) -> str:
         '''Calculate skill (L LS L+)'''
         if skill < 60:
-            return f'L- ({skill})'
+            return f'L-'
         elif skill >= 60 and skill < 75:
-            return f'LS ({skill})'
+            return f'LS'
         elif skill >= 75 and skill < 85:
-            return f'L+ ({skill})'
+            return f'L+'
         elif skill >= 85 and skill < 100:
-            return f'M- ({skill})'
+            return f'M-'
         elif skill >= 100 and skill < 115:
-            return f'MS ({skill})'
+            return f'MS'
         elif skill >= 115 and skill < 130:
-            return f'M+ ({skill})'
+            return f'M+'
         elif skill >= 130 and skill < 140:
-            return f'H- ({skill})'
+            return f'H-'
         elif skill >= 140 and skill < 150:
-            return f'HS ({skill})'
+            return f'HS'
         elif skill >= 150 and skill < 165:
-            return f'H+ ({skill})'
+            return f'H+'
         elif skill >= 165 and skill < 180:
-            return f'P- ({skill})'
+            return f'P-'
         elif skill >= 180 and skill < 195:
-            return f'PS ({skill})'
+            return f'PS'
         elif skill >= 195 and skill < 210:
-            return f'P+ ({skill})'
+            return f'P+'
         elif skill >= 210:
-            return f'G ({skill})'
+            return f'G'
         else:
             return 'MEGA GOOD'
-    
-    def _add_skill_human_to_player(self, player: Dict) -> Dict:
-        '''Add human skill to player'''
-        player['human_skill'] = self._calculate_skill(skill=player['skill'])
-        player['human_first_join'] = naturaltime(
-            value=player['first_join']
-        )
-        player['human_last_join'] = naturaltime(
-            value=player['last_join']
-        )
-        return player
-
-    def _add_badges_to_players(self, players: List[Dict]) -> List[Dict]:
-        '''Add cups to player top'''
-        cup_number = 1
-        players_response = []
-        for player in players:
-            player['cup'] = f'cup{cup_number}'
-            player['human_skill'] = self._calculate_skill(
-                skill=player['skill']
-            )
-            players_response.append(player)
-            cup_number += 1
-        return players_response
-    
-    def _parse_top_players(self, players: List[Dict]) -> List[Dict]:
-        '''Add player number'''
-        player_number = 1
-        players_response = []
-        for player in players:
-            player['player_number'] = player_number
-            player['human_time'] = precisedelta(
-                value=player['connection_time'],
-                minimum_unit='minutes', format='%0.0f'
-            )
-            player['human_skill'] = self._calculate_skill(
-                skill=player['skill']
-            )
-            players_response.append(player)
-            player_number += 1
-        return players_response

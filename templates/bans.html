@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+
+{% block bans_link %}
+<a class="nav-link" aria-current="page" href="/stats">Stats</a>
+<a class="nav-link active" href="/bans">Bans</a>
+{% endblock %}
+
+{% block bans_search %}
+<form class="d-flex">
+    <input class="form-control me-2" type="search" placeholder="Nickname/Steam" aria-label="Search">
+    <button class="btn btn-sm btn-outline-secondary" type="submit">Search</button>
+</form>
+{% endblock %}
+
+{% block bans %}
+<h1>Bans block</h1>
+{% endblock %}
